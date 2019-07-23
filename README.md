@@ -13,10 +13,10 @@ This repository contains a script to help deploy a tomcat application to introdu
 This project contains a tomcat war app and a bash script that installs and configures tomcat.
 
 The demo app can be configured by running the below command.
-NOTE: This has only been tested on Ubuntu18.04 platform on AWS.
+NOTE: This has only been tested on Ubuntu 18.04 platform on AWS.
 
 ```
-wget https://github.com/deep-security/demo-app/blob/master/demo-app.sh | sudo bash
+curl https://github.com/deep-security/demo-app/blob/master/demo-app.sh | sudo bash
 ```
 
 Since tomcat serves requests on port 8080 by default, the security group assigned to the newly created instances needs to allow incoming requests on port 8080.
