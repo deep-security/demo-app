@@ -26,7 +26,7 @@ set +e
 
 TIME=0
 DELAY=30
-TIMEOUT=300
+TIMEOUT=600
 while true; do
     apt-get -qq -y install $*
     [ $? -eq 0 ] && break
@@ -59,33 +59,6 @@ sh -c "chmod +x $TOMCAT_HOME/$TOMCAT_PACKAGE_NAME/bin/*.sh"
 # Create link to latest tomcat install
 ln -s $TOMCAT_HOME/$TOMCAT_PACKAGE_NAME/ $TOMCAT_HOME/latest
 
-# Create a systemd unit file
-cat << EOF > /etc/systemd/system/tomcat.service
-[Unit]
-Description=Tomcat 9 servlet
-After=network.target
-
-[Service]
-Type=forking
-
-User=tomcat
-Group=tomcat
-
-Environment="JAVA_HOME=/usr/lib/jvm/default-java"
-Environment="JAVA_OPTS=-Djava.security.egd=file:///dev/urandom -Djava.awt.headless=true"
-
-Environment="CATALINA_BASE=/opt/tomcat/latest"
-Environment="CATALINA_HOME=/opt/tomcat/latest"
-Environment="CATALINA_PID=/opt/tomcat/latest/temp/tomcat.pid"
-Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
-
-ExecStart=/opt/tomcat/latest/bin/startup.sh
-ExecStop=/opt/tomcat/latest/bin/shutdown.sh
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
 # Install the Demo app.
 [ -f demo-app.zip ] || wget $GITHUB_REPO/archive/master.zip -O demo-app.zip
 aptGetInstall zip
@@ -95,14 +68,8 @@ find demo-app/ -name "demo-app.war" -exec cp {} $TOMCAT_HOME/latest/webapps/ \;
 # Change tomcat port from default 8080 to 80.
 sed -i '/\s.*<Connector port="8080" protocol="HTTP/s|"8080"|"'$TOMCAT_PORT'"|g' $TOMCAT_HOME/latest/conf/server.xml
 
-# Notify systemd of the new service.
-systemctl daemon-reload
-
-# Start and check if tomcat service is active
-systemctl start tomcat
-sleep 5 && systemctl is-active tomcat
-
-# Launch Tomcat on boot
-systemctl enable tomcat
+# Start tomcat
+nohup $TOMCAT_HOME/latest/bin/startup.sh &
+sleep 2
 
 exit 0
