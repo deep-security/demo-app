@@ -15,7 +15,7 @@ fi
 # Vars
 GITHUB_REPO=https://github.com/deep-security/demo-app
 TOMCAT_HOME=/opt/tomcat
-TOMCAT_DOWNLOAD_URL=https://www-eu.apache.org/dist/tomcat/tomcat-8/v8.5.43/bin/apache-tomcat-8.5.43.tar.gz
+TOMCAT_DOWNLOAD_URL=https://archive.apache.org/dist/tomcat/tomcat-8/v8.5.45/bin/apache-tomcat-8.5.45.tar.gz
 TOMCAT_PACKAGE_NAME=$(echo "$TOMCAT_DOWNLOAD_URL" | awk -F'/' '{print $NF}' | sed 's|.tar.gz$||')
 TOMCAT_PORT=80
 
@@ -26,7 +26,7 @@ set +e
 
 TIME=0
 DELAY=30
-TIMEOUT=600
+TIMEOUT=1200
 while true; do
     apt-get -qq -y install $*
     [ $? -eq 0 ] && break
