@@ -34,13 +34,14 @@ while true; do
     sleep $DELAY
     TIME=$(expr $TIME + $DELAY)
     [ $TIME -ge $TIMEOUT ] && exit 1
+    apt-get clean && apt-get update
 done
 
 set -e
 }
 
 # Install pre-requisites
-apt-get update
+apt-get clean && apt-get update
 aptGetInstall default-jdk default-jre
 
 # Create Tomcat user
